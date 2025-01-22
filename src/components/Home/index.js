@@ -1,45 +1,15 @@
-import {useState, useEffect} from 'react'
+import {useState, useContext} from 'react'
 import Header from '../Header'
 import DishItem from '../DishItem'
 
 import './index.css'
+import CartContext from '../../context/CartContext'
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [response, setResponse] = useState([])
   const [activeCategoryId, setActiveCategoryId] = useState('')
-  const [cartItems, setCartItems] = useState([])
-
-  const addItemToCart = dish => {
-    const isAlreadyExists = cartItems.find(item => item.dishId === dish.dishId)
-    if (!isAlreadyExists) {
-      const newDish = {...dish, quantity: 1}
-      setCartItems(prev => [...prev, newDish])
-    } else {
-      setCartItems(prev =>
-        prev.map(item =>
-          item.dishId === dish.dishId
-            ? {...item, quantity: item.quantity + 1}
-            : item,
-        ),
-      )
-    }
-  }
-
-  const removeItemFromCart = dish => {
-    const isAlreadyExists = cartItems.find(item => item.dishId === dish.dishId)
-    if (isAlreadyExists) {
-      setCartItems(prev =>
-        prev
-          .map(item =>
-            item.dishId === dish.dishId
-              ? {...item, quantity: item.quantity - 1}
-              : item,
-          )
-          .filter(item => item.quantity > 0),
-      )
-    }
-  }
+  const [cartList, setRestaurantName] = useContext(CartContext)
 
   const getUpdatedData = tableMenuList =>
     tableMenuList.map(eachMenu => ({
@@ -61,23 +31,31 @@ const Home = () => {
     }))
 
   const fetchRestaurantApi = async () => {
+    console.log('hello')
     const api =
       'https://apis2.ccbp.in/restaurant-app/restaurant-menu-list-details'
     const apiResponse = await fetch(api)
+
     const data = await apiResponse.json()
+    console.log('hello')
     const updatedData = getUpdatedData(data[0].table_menu_list)
     setResponse(updatedData)
+    setRestaurantName(data[0].restaurant_name)
     setActiveCategoryId(updatedData[0].menuCategoryId)
     setIsLoading(false)
     console.log(data)
   }
 
-  useEffect(() => {
-    fetchRestaurantApi()
-  }, [fetchRestaurantApi])
+  //   useEffect(() => {
+  //     fetchRestaurantApi()
+  //   }, [])
 
   const onUpdateActiveCategoryIdx = menuCategoryId =>
     setActiveCategoryId(menuCategoryId)
+
+  const addItemToCart = () => {}
+
+  const removeItemFromCart = () => {}
 
   const renderTabMenuList = () =>
     response.map(eachCategory => {
@@ -106,11 +84,11 @@ const Home = () => {
     )
     return (
       <ul className="m-0 d-flex flex-column dish-list-container">
+        <div>{fetchRestaurantApi()}</div>
         {categoryDishes.map(eachDish => (
           <DishItem
             key={eachDish.dishId}
             dishDetails={eachDish}
-            cartItems={cartItems}
             addItemToCart={addItemToCart}
             removeItemFromCart={removeItemFromCart}
           />
@@ -128,7 +106,7 @@ const Home = () => {
     renderSpinner()
   ) : (
     <div className="home-background">
-      <Header cartItems={cartItems} />
+      <Header cartItems={cartList} />
       <ul className="m-0 ps-0 d-flex tab-container">{renderTabMenuList()}</ul>
       {renderDishes()}
     </div>

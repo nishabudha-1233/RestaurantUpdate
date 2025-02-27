@@ -27,6 +27,7 @@ const App = () => {
       )
     }
   }
+
   const removeCartItem = dishId => {
     setCartList(prevState => prevState.filter(item => item.dishId !== dishId))
   }

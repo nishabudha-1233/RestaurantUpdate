@@ -21,15 +21,13 @@ const Header = props => {
           <AiOutlineShoppingCart className="cart-icon" />
         </button>
       </Link>
-      <div>
-        <p>{cartList.length}</p>
-      </div>
+      <div>{cartList.length}</div>
     </div>
   )
   return (
     <header>
       <Link to="/">
-        <h1>{restaurantName}</h1>
+        <p>{restaurantName}</p>
       </Link>
       <div>
         <p>My Orders</p>

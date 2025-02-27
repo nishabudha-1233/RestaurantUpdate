@@ -1,4 +1,4 @@
-import {useState, useContext} from 'react'
+import {useEffect, useState, useContext} from 'react'
 import Header from '../Header'
 import DishItem from '../DishItem'
 
@@ -9,7 +9,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [response, setResponse] = useState([])
   const [activeCategoryId, setActiveCategoryId] = useState('')
-  const [cartList, setRestaurantName] = useContext(CartContext)
+  const {cartList, setRestaurantName} = useContext(CartContext)
 
   const getUpdatedData = tableMenuList =>
     tableMenuList.map(eachMenu => ({
@@ -27,28 +27,26 @@ const Home = () => {
         dishAvailability: eachDish.dish_Availability,
         dishType: eachDish.dish_type,
         addonCat: eachDish.addonCat,
+        menuCategory: eachMenu.menu_category,
       })),
     }))
 
   const fetchRestaurantApi = async () => {
-    console.log('hello')
     const api =
       'https://apis2.ccbp.in/restaurant-app/restaurant-menu-list-details'
     const apiResponse = await fetch(api)
-
     const data = await apiResponse.json()
-    console.log('hello')
+    console.log(data)
     const updatedData = getUpdatedData(data[0].table_menu_list)
     setResponse(updatedData)
     setRestaurantName(data[0].restaurant_name)
     setActiveCategoryId(updatedData[0].menuCategoryId)
     setIsLoading(false)
-    console.log(data)
   }
 
-  //   useEffect(() => {
-  //     fetchRestaurantApi()
-  //   }, [])
+  useEffect(() => {
+    fetchRestaurantApi()
+  }, [])
 
   const onUpdateActiveCategoryIdx = menuCategoryId =>
     setActiveCategoryId(menuCategoryId)
@@ -79,23 +77,28 @@ const Home = () => {
     })
 
   const renderDishes = () => {
-    const {categoryDishes} = response.find(
+    const category = response.find(
       eachCategory => eachCategory.menuCategoryId === activeCategoryId,
     )
+    if (!category) return null
+    const {categoryDishes} = category
+
     return (
       <ul className="m-0 d-flex flex-column dish-list-container">
-        <div>{fetchRestaurantApi()}</div>
+        {/* <div>{fetchRestaurantApi()}</div> */}
         {categoryDishes.map(eachDish => (
           <DishItem
             key={eachDish.dishId}
             dishDetails={eachDish}
             addItemToCart={addItemToCart}
             removeItemFromCart={removeItemFromCart}
+            categoryDishes={eachDish.menuCategory}
           />
         ))}
       </ul>
     )
   }
+
   const renderSpinner = () => (
     <div className="spinner-container">
       <div className="spinner-border" role="status" />

@@ -2,7 +2,7 @@ import {useState, useContext} from 'react'
 import CartContext from '../../context/CartContext'
 import './index.css'
 
-const DishItem = ({dishDetails}) => {
+const DishItem = ({dishDetails, categoryDishes}) => {
   const {
     dishName,
     dishType,
@@ -37,17 +37,17 @@ const DishItem = ({dishDetails}) => {
   )
   return (
     <li className="mb-3 p-3 dish-item-container d-flex">
-      <div className={`${dishType === 1}?'non-veg-border':''`}>
+      <div className={`${dishType === 1 ? 'non-veg-border' : ''}`}>
         <h1>{dishName}</h1>
         <p>
-          {dishCurrency}
-          {dishPrice}
+          {dishCurrency} {dishPrice}
         </p>
-        <p>{{dishDescription}}</p>
+        <p>{dishDescription}</p>
+        <p>{categoryDishes}</p>
         {dishAvailability && renderControllerButton()}
         {!dishAvailability && <p className="text-danger">Not available</p>}
-        {addonCat.length !== 0 && (
-          <p className="mb-0">Customization available</p>
+        {addonCat.length !== 0 && categoryDishes === 'Fast Food' && (
+          <p className="mb-0">Customizations available</p>
         )}
         {quantity > 0 && (
           <button type="button" className="btn" onClick={onAddItemToCart}>
@@ -55,8 +55,8 @@ const DishItem = ({dishDetails}) => {
           </button>
         )}
       </div>
-      <p>{dishCalories}calories</p>
-      <img alt={dishName} src={dishImage} />
+      <p>{dishCalories} calories</p>
+      <img src={dishImage} alt={dishName} value={dishName} className="image" />
     </li>
   )
 }

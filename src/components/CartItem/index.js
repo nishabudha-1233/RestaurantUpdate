@@ -20,25 +20,30 @@ const CartItem = ({cartItemDetails}) => {
     removeCartItem,
   } = useContext(CartContext)
   const onIncreaseQty = () => incrementCartItemQuantity(dishId)
-  const onDecreseQty = () => decrementCartItemQuantity(dishId)
+  const onDecreaseQty = () => decrementCartItemQuantity(dishId)
   const onRemoveCartItem = () => removeCartItem(dishId)
 
   return (
     <li>
-      <img className="cart-image" src={dishImage} alt={dishName} />
+      <img
+        className="cart-image"
+        src={dishImage}
+        alt={dishName}
+        value={dishId}
+      />
       <div>
-        <p>{{dishName}}</p>
+        <p>{dishName}</p>
         <p>
           {dishCurrency}
           {(quantity * dishPrice).toFixed(2)}
         </p>
       </div>
       <div>
-        <button type="button" className="conteol-btn" onClick={onDecreseQty}>
+        <button type="button" className="control-btn" onClick={onDecreaseQty}>
           -
         </button>
         <p>{quantity}</p>
-        <button type="button" className="conteol-btn" onClick={onIncreaseQty}>
+        <button type="button" className="control-btn" onClick={onIncreaseQty}>
           +
         </button>
       </div>

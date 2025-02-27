@@ -20,6 +20,8 @@ const Cart = () => {
     <>
       <div>
         <h1>Cart Items</h1>
+      </div>
+      <div>
         <button
           type="button"
           className="remove-all-btn text-primary"
@@ -39,7 +41,7 @@ const Cart = () => {
   return (
     <div>
       <Header />
-      <div>{cartList.length !== 0 ? renderEmptyView() : renderCartItems()}</div>
+      <div>{cartList.length === 0 ? renderEmptyView() : renderCartItems()}</div>
     </div>
   )
 }

@@ -28,11 +28,16 @@ const Login = props => {
   }
 
   const onSubmitFailure = errorMsgs => {
-    setErrorMsg({errorMsgs})
+    setErrorMsg(errorMsgs)
   }
 
   const submitForm = async event => {
     event.preventDefault()
+
+    // if (username.trim() === '' || password.trim() === '') {
+    //   setErrorMsg('Username and password cannot be empty.')
+    //   return
+    // }
 
     const userDetails = {username, password}
     const url = 'https://apis.ccbp.in/login'
@@ -42,7 +47,7 @@ const Login = props => {
     }
     const response = await fetch(url, options)
     const data = await response.json()
-    if (response.ok === true) {
+    if (response.status === 200) {
       onSubmitSuccess(data.jwt_token)
     } else {
       onSubmitFailure(data.error_msg)
@@ -125,7 +130,7 @@ const Login = props => {
         <label htmlFor="password">PASSWORD</label>
         <input
           id="password"
-          type="text"
+          type="password"
           onChange={onchangeHandler}
           value={password}
         />
@@ -133,7 +138,7 @@ const Login = props => {
         <button type="submit" className="login-button">
           Login
         </button>
-        {errorMsg !== '' && <p className="error-message">*{errorMsg}</p>}
+        {errorMsg && <p className="error-message">{errorMsg}</p>}
       </form>
     </div>
   )
